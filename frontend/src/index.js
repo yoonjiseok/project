@@ -5,4 +5,5 @@ import App from './App';
 
 ReactDOM.render(<APP />,document.getElementById('root'));
 
-//import React from 'react'
+
+export default App;
