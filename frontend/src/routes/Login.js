@@ -1,25 +1,71 @@
-import react from 'react'
-import {Button} from 'semantic-ui-react';
+import React from 'react';
+import { Button, Form } from 'semantic-ui-react'
+import axios from 'axios';
 
-class App extends React.Component {
-    
-  
-    
+import './Login.css';
 
+class Login extends React.Component {
+	
+	constructor(){
+		super();
+		
+		this.state = {
+			username : '',
+			userpass : ''
+		}
+		
+		this.handleUserName = this.handleUserName.bind(this);
+		this.handleUserPass = this.handleUserPass.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+	
+	handleSubmit(){
+		axios.post('http://localhost:4000/login',{ 
+			username : this.state.username , 
+			userpass : this.state.userpass })
+		.then((response)=>{
+			
+			let { success , error } = response.data;
+			let { history } = this.props;
+			
+			if ( success === 1 ) {
+				history.push('/company');
+			} else if ( success === 2 ) {
+				history.push('/register');
+			} else if ( error === -1 ) {
+				alert('비밀번호가 맞지 않습니다.');
+				return;
+			}
+		});
+	}
+	
+	handleUserName(e){
+		this.setState({ username : e.target.value });
+	}
+	
+	handleUserPass(e){
+		this.setState({ userpass : e.target.value });
+	}
+    
     render(){
         return(
-        <Router>
-            <div>
-                <button>전송</button>
-            </div>
-            
-        
-        
-        
-        
-        
+			<div className="login-bg">
+				<div className="login">
+					<Form>
+						<Form.Field>
+							<label>User Name</label>
+							<input type="text" placeholder='User Name' onChange={this.handleUserName} />
+						</Form.Field>
+						<Form.Field>
+							<label>User Password</label>
+							<input type="password" placeholder='User Password' onChange={this.handleUserPass}/>
+						</Form.Field>
+						<Button onClick={this.handleSubmit}>Submit</Button>
+					</Form>
+				</div>
+			</div>
         )
     }
-    
-    
 }
+
+export default Login;
